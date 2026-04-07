@@ -1,0 +1,5 @@
+.chat-box { width: 400px; margin: 20px auto; border: 1px solid #ccc; padding: 10px; }
+.user { text-align: right; color: blue; }
+.bot { text-align: left; color: green; }
+input { width: 80%; padding: 5px; margin-top: 10px; }
+button { padding: 5px 10px; }
