@@ -1,11 +1,13 @@
 .chat-container {
   width: 80%;
-  margin: 30px auto;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: #f4f7fa;
-  border-radius: 15px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  margin: 20px auto; /* top margin 30px, auto horizontal centering, no bottom margin */
   padding: 20px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: #e3e2e6;
+  border-radius: 15px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box; /* ensures padding doesn’t overflow width */
+  overflow: hidden; /* prevents container scroll */
 }
 
 .chat-box {

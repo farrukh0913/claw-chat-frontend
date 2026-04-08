@@ -1,25 +1,27 @@
-<div class="chat-container">
+<div class="flex justify-center items-center">
+  <div class="chat-container">
 
-  <!-- Chat messages -->
-  <div class="chat-box" #chatBox>
-    <div *ngFor="let msg of messages" [ngClass]="{'user-msg': msg.from === 'User', 'bot-msg': msg.from !== 'User'}">
-      <span class="from">{{ msg.from }}:</span>
-      <span class="text">{{ msg.text }}</span>
+    <!-- Chat messages -->
+    <div class="chat-box" #chatBox>
+      <div *ngFor="let msg of messages" [ngClass]="{'user-msg': msg.from === 'User', 'bot-msg': msg.from !== 'User'}">
+        <span class="from">{{ msg.from }}:</span>
+        <span class="text">{{ msg.text }}</span>
+      </div>
     </div>
-  </div>
 
-  <!-- Input section -->
-  <div class="chat-input">
-    <input [(ngModel)]="userMessage" (keyup.enter)="sendMessage()" placeholder="Type a message..." />
-    <button class="btn send-btn" (click)="sendMessage()">Send</button>
-    <button class="btn wa-btn" (click)="startWhatsApp()">Start WhatsApp Bot</button>
-  </div>
+    <!-- Input section -->
+    <div class="chat-input">
+      <input [(ngModel)]="userMessage" (keyup.enter)="sendMessage()" placeholder="Type a message..." />
+      <button class="btn send-btn" (click)="sendMessage()">Send</button>
+      <button class="btn wa-btn" (click)="startWhatsApp()">Start WhatsApp Bot</button>
+    </div>
 
-  <!-- WhatsApp bot responses section -->
-  <div class="whatsapp-responses" *ngIf="whatsappResponses.length > 0">
-    <h3>WhatsApp Bot Responses</h3>
-    <div *ngFor="let resp of whatsappResponses" class="wa-msg">
-      <strong>{{ resp.from }}:</strong> {{ resp.text }}
+    <!-- WhatsApp bot responses section -->
+    <div class="whatsapp-responses" *ngIf="whatsappResponses.length > 0">
+      <h3>WhatsApp Bot Responses</h3>
+      <div *ngFor="let resp of whatsappResponses" class="wa-msg">
+        <strong>{{ resp.from }}:</strong> {{ resp.text }}
+      </div>
     </div>
   </div>
 </div>
