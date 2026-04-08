@@ -1,7 +1,7 @@
 <div class="chat-container">
 
   <!-- Chat messages -->
-  <div class="chat-box">
+  <div class="chat-box" #chatBox>
     <div *ngFor="let msg of messages" [ngClass]="{'user-msg': msg.from === 'User', 'bot-msg': msg.from !== 'User'}">
       <span class="from">{{ msg.from }}:</span>
       <span class="text">{{ msg.text }}</span>
