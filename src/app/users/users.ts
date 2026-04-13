@@ -1,4 +1,4 @@
-import { Component, computed } from '@angular/core';
+import { Component, computed, effect, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
@@ -14,6 +14,7 @@ import { BehaviorSubject, interval, map } from 'rxjs';
   imports: [FormsModule, HttpClientModule, CommonModule],
 })
 export class UsersComponent {
+  testVariable = signal(0);
 
   // -----------------------------
   // MOCK OBSERVABLES (replace with API later)
@@ -47,10 +48,24 @@ export class UsersComponent {
     initialValue: '',
   });
 
+  dashboardSignal = computed(() => {
+    console.log('dashboardSignal computed');
+    const users = this.usersSig();
+    return { 
+      // testVariable: 2 + users.length,
+      value: users?.length
+    };
+  });
+
+  effect1 = effect(() => {
+    console.log('effect1 value:' + this.dashboardSignal()?.value); // need to read the value of the signal to trigger the dashboardSignal
+  });
+
   // -----------------------------
   // COMPUTED DERIVED STATE
   // -----------------------------
   dashboard = computed(() => {
+    console.log('Computed state:');
     const user = this.userSig();
     const users = this.usersSig();
     const time = this.timeSig();
