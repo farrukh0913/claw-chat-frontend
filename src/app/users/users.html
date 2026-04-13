@@ -1,0 +1,72 @@
+<h2 class="text-2xl font-bold mb-6 text-gray-800">
+  Users Dashboard
+</h2>
+
+<!-- Dashboard Card -->
+<div
+  *ngIf="dashboard() as d"
+  class="bg-white shadow-lg rounded-2xl p-6 border border-gray-100 space-y-4"
+>
+
+  <!-- User Info -->
+  <div class="flex items-center justify-between">
+    <div>
+      <p class="text-sm text-gray-500">Current User</p>
+      <p class="text-lg font-semibold text-gray-800">
+        {{ d.currentUser }}
+      </p>
+    </div>
+
+    <span
+      class="px-3 py-1 rounded-full text-xs font-medium"
+      [ngClass]="d.isAdmin ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'"
+    >
+      {{ d.role }}
+    </span>
+  </div>
+
+  <!-- Stats Grid -->
+  <div class="grid grid-cols-2 gap-4 pt-4">
+    
+    <div class="bg-gray-50 rounded-xl p-4">
+      <p class="text-xs text-gray-500">Total Users</p>
+      <p class="text-xl font-bold text-gray-800">
+        {{ d.totalUsers }}
+      </p>
+    </div>
+
+    <div class="bg-gray-50 rounded-xl p-4">
+      <p class="text-xs text-gray-500">Status</p>
+      <p class="text-xl font-bold"
+         [ngClass]="d.isAdmin ? 'text-green-600' : 'text-yellow-600'">
+        {{ d.isAdmin ? 'Admin' : 'User' }}
+      </p>
+    </div>
+
+  </div>
+
+  <!-- Last Update -->
+  <div class="pt-2 border-t border-gray-100">
+    <p class="text-xs text-gray-500">Last Update</p>
+    <p class="text-sm text-gray-700 font-medium">
+      {{ d.lastUpdate }}
+    </p>
+  </div>
+</div>
+
+<!-- Buttons -->
+<div class="flex gap-3 mt-6">
+  <button
+    (click)="addUser()"
+    class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow transition"
+  >
+    + Add User
+  </button>
+
+  <button
+    (click)="changeUser()"
+    class="px-4 py-2 bg-gray-800 hover:bg-black text-white rounded-xl shadow transition"
+  >
+    Switch User
+  </button>
+</div>
