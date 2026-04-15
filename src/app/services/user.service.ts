@@ -11,7 +11,7 @@ export class UserService {
   // -------------------------
   // STATE (RxJS store)
   // -------------------------
-  userSubject = new BehaviorSubject<any>({ name: 'Farrukh', role: 'Admin' });
+  userSubject = new BehaviorSubject<any>(null);
   public user$ = this.userSubject.asObservable();
 
   usersListSubject = new BehaviorSubject<any[]>([]);

@@ -25,13 +25,17 @@ export class UsersComponent {
   }
 
   ngOnInit() {
-    this.userService.getUsers();
-
-
     this.userService.test$.subscribe((value) => {
       console.log('test value:', value);
       this.description = value;
     });
+
+    this.userService.user$.subscribe((user) => {
+      if(!user){
+        this.userService.getUsers();
+      }
+    });
+
   }
 
   // -----------------------------
@@ -77,9 +81,7 @@ export class UsersComponent {
     };
   });
 
-  // -----------------------------
-  // ACTIONS
-  // -----------------------------
+  // add a new user
   addUser() {
     const current = this.userService.usersListSubject.value;
 
@@ -89,15 +91,12 @@ export class UsersComponent {
     ]);
   }
 
-  changeUser() {
-    this.userService.userSubject.next({
-      name: 'Updated User',
-      role: 'Editor',
-    });
-  }
-
-  ngOnDestroy() {
-    this.userService.testSubject.next('');
-    this.userService.testSubject.complete();
+  // switch user to a random user
+  switchUser() {
+    const users = this.usersSig?.();
+    if (users?.length) {
+      const randomIndex = Math.floor(Math.random() * users.length);
+      this.userService.userSubject.next(users[randomIndex]);
+    }
   }
 }
