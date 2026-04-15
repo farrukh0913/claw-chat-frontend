@@ -2,6 +2,8 @@ import { Component, ChangeDetectorRef, AfterViewChecked, ElementRef, ViewChild }
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
+import { UserService } from '../services/user.service';
+import { Environment } from '../environment';
 
 interface Message {
   from: string;
@@ -15,6 +17,7 @@ interface Message {
   standalone: true,
   imports: [FormsModule, HttpClientModule, CommonModule]
 })
+
 export class ChatComponent implements AfterViewChecked {
   userMessage: string = '';
   messages: Message[] = [];
@@ -22,10 +25,16 @@ export class ChatComponent implements AfterViewChecked {
 
   @ViewChild('chatBox') chatBox!: ElementRef<HTMLDivElement>;
 
-  constructor(private cd: ChangeDetectorRef) {}
+  constructor(private cd: ChangeDetectorRef, private userService: UserService) {}
 
   ngAfterViewChecked() {
     this.scrollToBottom();
+  }
+
+  ngOnInit() {
+    this.userService.test$.subscribe((value) => {
+      console.log('test value: in ChatComponent', value);
+    });
   }
 
   scrollToBottom() {
@@ -49,7 +58,7 @@ export class ChatComponent implements AfterViewChecked {
       if (message.trim() === '2+2') {
         botReply = 'The answer to 2+2 is... (drumroll please)... 4!';
       } else {
-        const res = await fetch('http://localhost:3000/api/chat', {
+        const res = await fetch(Environment.API_URL + 'chat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ message })
@@ -76,7 +85,7 @@ export class ChatComponent implements AfterViewChecked {
 
   async startWhatsApp() {
     try {
-      const res = await fetch('http://localhost:3000/api/whatsapp/start', { method: 'POST' });
+      const res = await fetch(Environment.API_URL + 'whatsapp/start', { method: 'POST' });
       const data = await res.json();
       this.whatsappResponses.push({ from: 'System', text: data.message });
       this.cd.detectChanges();

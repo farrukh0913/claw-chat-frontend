@@ -2,9 +2,8 @@ import { Component, computed, effect, Signal, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
-
 import { toSignal } from '@angular/core/rxjs-interop';
-import { BehaviorSubject, interval, map } from 'rxjs';
+import { interval, map } from 'rxjs';
 import { UserService } from '../services/user.service';
 
 @Component({
@@ -17,7 +16,8 @@ import { UserService } from '../services/user.service';
 export class UsersComponent {
   testVariable = signal(0);
   userSig: Signal<any> | undefined;
-  usersSig: Signal<any[]> | undefined;
+  usersSig: Signal<any> | undefined;
+  description: string = '';
 
   constructor(private userService: UserService) {
     this.userSig = toSignal(this.userService.user$, { initialValue: null as any });
@@ -26,6 +26,12 @@ export class UsersComponent {
 
   ngOnInit() {
     this.userService.getUsers();
+
+
+    this.userService.test$.subscribe((value) => {
+      console.log('test value:', value);
+      this.description = value;
+    });
   }
 
   // -----------------------------
@@ -47,14 +53,11 @@ export class UsersComponent {
 
   dashboardSignal = computed(() => {
     const users = this.usersSig?.();
-    return { 
-      // testVariable: 2 + users.length,
-      value: users?.length
-    };
+    return {  totalUsers: users?.count || 0 };
   });
 
-  effect1 = effect(() => {
-    console.log('effect1 value:' + this.dashboardSignal()?.value); // need to read the value of the signal to trigger the dashboardSignal
+  effect = effect(() => {
+    console.log('effect Total Users:' + this.dashboardSignal()?.totalUsers); // need to read the value of the signal to trigger the dashboardSignal
   });
 
   // -----------------------------
@@ -91,5 +94,10 @@ export class UsersComponent {
       name: 'Updated User',
       role: 'Editor',
     });
+  }
+
+  ngOnDestroy() {
+    this.userService.testSubject.next('');
+    this.userService.testSubject.complete();
   }
 }
