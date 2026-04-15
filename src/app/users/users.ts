@@ -1,10 +1,11 @@
-import { Component, computed, effect, signal } from '@angular/core';
+import { Component, computed, effect, Signal, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 
 import { toSignal } from '@angular/core/rxjs-interop';
 import { BehaviorSubject, interval, map } from 'rxjs';
+import { UserService } from '../services/user.service';
 
 @Component({
   selector: 'app-users',
@@ -15,19 +16,21 @@ import { BehaviorSubject, interval, map } from 'rxjs';
 })
 export class UsersComponent {
   testVariable = signal(0);
+  userSig: Signal<any> | undefined;
+  usersSig: Signal<any[]> | undefined;
+
+  constructor(private userService: UserService) {
+    this.userSig = toSignal(this.userService.user$, { initialValue: null as any });
+    this.usersSig = toSignal(this.userService.users$, { initialValue: [] as any[] });
+  }
+
+  ngOnInit() {
+    this.userService.getUsers();
+  }
 
   // -----------------------------
   // MOCK OBSERVABLES (replace with API later)
   // -----------------------------
-  private userSubject = new BehaviorSubject<any>({
-    name: 'Farrukh',
-    role: 'Admin',
-  });
-
-  private usersListSubject = new BehaviorSubject<any[]>([
-    { id: 1, name: 'Ali' },
-    { id: 2, name: 'Ahmed' },
-  ]);
 
   private activitySubject = interval(2000).pipe(
     map(() => new Date().toLocaleTimeString())
@@ -36,21 +39,14 @@ export class UsersComponent {
   // -----------------------------
   // CONVERT OBSERVABLES → SIGNALS
   // -----------------------------
-  userSig = toSignal(this.userSubject.asObservable(), {
-    initialValue: null,
-  });
 
-  usersSig = toSignal(this.usersListSubject.asObservable(), {
-    initialValue: [],
-  });
 
   timeSig = toSignal(this.activitySubject, {
     initialValue: '',
   });
 
   dashboardSignal = computed(() => {
-    console.log('dashboardSignal computed');
-    const users = this.usersSig();
+    const users = this.usersSig?.();
     return { 
       // testVariable: 2 + users.length,
       value: users?.length
@@ -65,15 +61,14 @@ export class UsersComponent {
   // COMPUTED DERIVED STATE
   // -----------------------------
   dashboard = computed(() => {
-    console.log('Computed state:');
-    const user = this.userSig();
-    const users = this.usersSig();
+    const user = this.userSig?.();
+    const users = this.usersSig?.();
     const time = this.timeSig();
 
     return {
       currentUser: user?.name,
       role: user?.role,
-      totalUsers: users.length,
+      totalUsers: users?.length || 0,
       lastUpdate: time,
       isAdmin: user?.role === 'Admin',
     };
@@ -83,16 +78,16 @@ export class UsersComponent {
   // ACTIONS
   // -----------------------------
   addUser() {
-    const current = this.usersListSubject.value;
+    const current = this.userService.usersListSubject.value;
 
-    this.usersListSubject.next([
+    this.userService.usersListSubject.next([
       ...current,
       { id: current.length + 1, name: 'New User' },
     ]);
   }
 
   changeUser() {
-    this.userSubject.next({
+    this.userService.userSubject.next({
       name: 'Updated User',
       role: 'Editor',
     });
